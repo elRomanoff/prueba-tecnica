@@ -36,10 +36,6 @@ class Products {
         }
     }
 }
-
-const products = new Products();
-
-
 class Product{
     constructor(name,color,weight,stock,id){
         this.name = name;
@@ -49,11 +45,48 @@ class Product{
     }
 }
 
-
-
-
+const products = new Products();
 
 const producto1 = new Product("Playstation5", "ligthblue", "4.5kg", 300)
-const producto2 = new Product("Playstation4", "ligthblue", "3.4KG",200)
+const producto2 = new Product("Playstation4", "black", "3.4KG",200)
 
-console.log(products.addProduct([producto1, producto2]))
+products.addProduct([producto1, producto2])
+
+
+//DOM
+
+const nombre = document.getElementById("nombre")
+const color = document.getElementById("color");
+const peso = document.getElementById("peso")
+const stock = document.getElementById("stock")
+
+const btnSubmit = document.getElementById("submit")
+
+const list = document.getElementById("list")
+
+function update() {
+    list.innerHTML = ""
+    products.arrProducts.forEach(x =>{
+        const li = document.createElement("li")
+        li.innerHTML = `nombre: ${x.name}, color: ${x.color}, peso: ${x.weight}, stock: ${x.stock}, id: ${x.id}`
+        li.setAttribute("idProduct", x.id)
+
+        const eraseBtn = document.createElement('button')
+        eraseBtn.innerHTML ="Borrar"
+        eraseBtn.addEventListener('click',()=>{
+            products.deleteProduct(li.getAttribute("idProduct"))
+            update()
+        })
+        li.appendChild(eraseBtn)
+        list.appendChild(li)
+    })
+}
+update()
+
+btnSubmit.addEventListener('click', function(e){
+    e.preventDefault()
+    const productDom = new Product(nombre.value, color.value, peso.value,stock.value)
+    nombre.value = ""; color.value = ""; stock.value ="", peso.value = "";
+    products.addProduct(productDom)
+    update()
+})
