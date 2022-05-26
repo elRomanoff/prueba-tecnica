@@ -135,8 +135,11 @@ update()
 
 btnSubmit.addEventListener('click', function(e){
     e.preventDefault()
-    const productDom = new Product(nombre.value, color.value, peso.value,stock.value)
-    nombre.value = ""; color.value = ""; stock.value ="", peso.value = "";
-    products.addProduct(productDom)
-    update()
+
+    if(nombre.value && color.value && stock.value && peso.value){
+        const productDom = new Product(nombre.value, color.value, peso.value,stock.value)
+        nombre.value = ""; color.value = ""; stock.value ="", peso.value = "";
+        products.addProduct(productDom)
+        update()
+    }
 })
