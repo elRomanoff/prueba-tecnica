@@ -1,0 +1,19 @@
+body{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap
+}
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-basis: 40%
+}
+
+form input{
+    margin: 5%
+}
+
+ul{
+    flex-basis:50%
+}
