@@ -9,35 +9,45 @@ class Products {
     getAllProducts() {
         return this.arrProducts
     }
+    getProductById(id){
+        return this.arrProducts[id-1]
+    }
     addProduct(product) {
         if (Array.isArray(product)) {
-            product.forEach(productItem => {
-                productItem.id = this.arrProducts.length + 1
+            product.forEach(productItem => {    
+                if (this.arrProducts[this.arrProducts.length - 1]) productItem.id = parseInt(this.arrProducts[this.arrProducts.length - 1].id) + 1
+                else productItem.id = 1
                 this.arrProducts.push(productItem)
             })
             return `ID's: ${this.arrProducts.length - product.length + 1} - ${this.arrProducts.length}`
         }
         else {
-            product.id = this.arrProducts.length + 1
+            if (this.arrProducts[this.arrProducts.length - 1]) product.id = parseInt(this.arrProducts[this.arrProducts.length - 1].id) + 1
+            else product.id = 1
             this.arrProducts.push(product)
             return product.id   
         }
     }
     editProduct(productId, product) {
-        if(this.arrProducts[productId-1]){
-            this.arrProducts[productId - 1] = product
-            console.log(this.arrProducts[productId-1])
+
+        let productToEdit = this.arrProducts.findIndex(x => x.id == productId)
+
+        if(productToEdit >= 0){
+            console.log(productToEdit)
+            this.arrProducts[productToEdit] = product
         }
     }
     deleteProduct(productId) {
         if (productId > 0) {
-            this.arrProducts.splice(productId - 1, 1)
+            let productToDelete = this.arrProducts.findIndex(x => x.id == productId)
+
+            this.arrProducts.splice(productToDelete, 1)
             return "deleted"
         }
     }
 }
 class Product{
-    constructor(name,color,weight,stock,id){
+    constructor(name,color,weight,stock){
         this.name = name;
         this.color = color;
         this.weight = weight;
@@ -77,7 +87,47 @@ function update() {
             products.deleteProduct(li.getAttribute("idProduct"))
             update()
         })
+
+        const editBtn = document.createElement("button")
+        editBtn.innerHTML = "Editar"
+        editBtn.addEventListener("click", ()=>{
+            li.innerHTML="";
+            
+            const fragment = document.createDocumentFragment()
+            const auxInputName = document.createElement("input");
+            const auxInputColor = document.createElement("input");
+            const auxInputWeight = document.createElement("input");
+            const auxInputStock = document.createElement("input");
+            const auxBtnSubmit = document.createElement("button")
+
+            let productToUpdate = products.getProductById(li.getAttribute("idProduct"));
+
+            auxInputName.value = productToUpdate.name
+            auxInputColor.value = productToUpdate.color
+            auxInputWeight.value = productToUpdate.weight
+            auxInputStock.value = productToUpdate.stock
+            
+            auxBtnSubmit.innerHTML = "Editar"
+
+            fragment.appendChild(auxInputName)
+            fragment.appendChild(auxInputColor)
+            fragment.appendChild(auxInputWeight)
+            fragment.appendChild(auxInputStock)
+            fragment.appendChild(auxBtnSubmit)
+            
+            auxBtnSubmit.addEventListener('click', function(){
+                const auxProduct = new Product(auxInputName.value, auxInputColor.value, auxInputWeight.value, auxInputStock.value)
+                auxProduct.id = li.getAttribute("idProduct")
+                products.editProduct(auxProduct.id, auxProduct)
+                update()
+            })
+
+            li.appendChild(fragment)
+        })
+
+        
         li.appendChild(eraseBtn)
+        li.appendChild(editBtn)
         list.appendChild(li)
     })
 }
